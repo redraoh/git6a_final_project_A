@@ -6,22 +6,26 @@
 </head>
 <body>
 <h1>사용집계</h1>
-
-사용일
-날짜
-구분 <input type="radio" name="slctcp" id="slctmon"> 월별 <input type="radio" name="slctcp" id="slctday"> 일별
+<label for="usmth">사용일</label>
+<input type="month" id="usmth" name="usmth" />
+구분 <input type="radio" name="slctcp" id="slctmon"> <label for="slctmon">월별</label> <input type="radio" name="slctcp" id="slctday"> <label for="slctday">일별</label>
 <button>조 회</button>
 
 <table>
-    <th>
-        <td>사용월</td>
-        <td>할인종류</td>
-        <td>결제구분</td>
-        <td>사용매수</td>
-    </th>
+    <tr>
+        <th>사용월</th>
+        <th>할인종류</th>
+        <th>결제구분</th>
+        <th>사용매수</th>
+    </tr>
 </table>
 
 <button>EXCEL</button>
+
+<script>
+    document.getElementById('usmth').value = new Date().toISOString().slice(0, 7);
+    document.getElementById('usmth').max = new Date().toISOString().slice(0, 7);
+</script>
 
 </body>
 </html>
