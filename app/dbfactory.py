@@ -16,4 +16,3 @@ def db_startup():
     coupon.Base.metadata.create_all(engine)
 
 # 테이블구조를 다시만들어주진않음
-

@@ -13,9 +13,3 @@ class Member(Base):
     mname = Column(String(20), nullable=False)
     pname = Column(String(40), nullable=False)
     regdate = Column(DateTime, default=datetime.now)
-
-
-
-
-
-
