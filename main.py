@@ -8,10 +8,10 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.dbfactory import db_startup
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    yield # 비동기 처리가 가능하게끔 yield
-    db_startup()
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     yield # 비동기 처리가 가능하게끔 yield
+#     db_startup()
 
 app = FastAPI()
 
@@ -19,8 +19,8 @@ app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='050924duedate')
 
 # jinja2 설정
-templates = Jinja2Templates(directory='views/templates')
-app.mount('/static', StaticFiles(directory='views/static'), name='static')
+# templates = Jinja2Templates(directory='views/templates')
+# app.mount('/static', StaticFiles(directory='views/static'), name='static')
 
 # 서버시작시 디비 생성
 @app.on_event('startup')
