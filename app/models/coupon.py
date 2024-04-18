@@ -4,7 +4,7 @@ from app.models.base import Base
 
 
 class Coupon(Base):
-    __tablename__ = 'product'
+    __tablename__ = 'coupon'
 
     dno = Column(Integer, primary_key=True, autoincrement=True)
     cno = Column(String(10), nullable=False, unique=True)

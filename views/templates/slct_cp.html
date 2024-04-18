@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사용집계</title>
+</head>
+<body>
+<h1>사용집계</h1>
+<label for="usmth">사용일</label>
+<input type="month" id="usmth" name="usmth" />
+구분 <input type="radio" name="slctcp" id="slctmon"> <label for="slctmon">월별</label> <input type="radio" name="slctcp" id="slctday"> <label for="slctday">일별</label>
+<button>조 회</button>
+
+<table>
+    <tr>
+        <th>사용월</th>
+        <th>할인종류</th>
+        <th>결제구분</th>
+        <th>사용매수</th>
+    </tr>
+    {% if row %}{% else %}
+        <tr>
+            <td colspan="3">쿠폰 사용 정보가 없습니다.</td>
+        </tr>
+    {% endif %}
+    {% for cp in cplist %}
+    <tr>
+        <td>dummy</td>
+        <td>dummy</td>
+        <td>dummy</td>
+        <td>dummy</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<button>EXCEL</button>
+
+<script>
+    document.getElementById('usmth').value = new Date().toISOString().slice(0, 7);
+    document.getElementById('usmth').max = new Date().toISOString().slice(0, 7);
+</script>
+
+</body>
+</html>

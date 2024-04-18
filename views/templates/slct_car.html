@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>시간대별 입차 차량</title>
+</head>
+<body>
+    <h1>시간대 검색</h1>
+    <label for="cno">차량번호</label>
+    <label for="usdate">입차일자</label>
+    <input type="date" id="usdate" name="usdate" />
+
+    <button>조 회</button>
+
+    <table>
+        <tr>
+            <th>차량번호</th>
+            <th>입차시간</th>
+            <th>입구명</th>
+        </tr>
+        <tr>
+            <td>dummy</td>
+            <td>dummy</td>
+            <td>dummy</td>
+        </tr>
+    </table>
+
+{#    pagination#}
+    <ul></ul>
+
+    <table>
+        <tr>
+            <th>차량번호</th>
+            <th></th>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td><label for="chgno">변경번호</label></td>
+            <td><input type="text" id="chgno"><button>변경</button></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>할인종류</th>
+        </tr>
+    </table>
+
+    <button>EXCEL</button>
+
+    <script>
+        document.getElementById('usdate').value = new Date().toISOString().substring(0, 10);
+        document.getElementById('usdate').max = new Date().toISOString().substring(0, 10);
+    </script>
+
+</body>
+</html>
