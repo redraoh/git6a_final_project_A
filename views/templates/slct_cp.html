@@ -18,6 +18,19 @@
         <th>결제구분</th>
         <th>사용매수</th>
     </tr>
+    {% if row %}{% else %}
+        <tr>
+            <td colspan="3">쿠폰 사용 정보가 없습니다.</td>
+        </tr>
+    {% endif %}
+    {% for cp in cplist %}
+    <tr>
+        <td>dummy</td>
+        <td>dummy</td>
+        <td>dummy</td>
+        <td>dummy</td>
+    </tr>
+    {% endfor %}
 </table>
 
 <button>EXCEL</button>
