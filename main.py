@@ -8,6 +8,8 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.dbfactory import db_startup
 
+from app.routes.coupon import coupon_router
+
 # @asynccontextmanager
 # async def lifespan(app: FastAPI):
 #     yield # 비동기 처리가 가능하게끔 yield
@@ -19,8 +21,11 @@ app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='050924duedate')
 
 # jinja2 설정
-# templates = Jinja2Templates(directory='views/templates')
+templates = Jinja2Templates(directory='views/templates')
 # app.mount('/static', StaticFiles(directory='views/static'), name='static')
+
+# 외부 route 파일 불러오기
+app.include_router(coupon_router)
 
 # 서버시작시 디비 생성
 @app.on_event('startup')
