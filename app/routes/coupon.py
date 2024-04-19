@@ -14,7 +14,8 @@ templates = Jinja2Templates(directory='views/templates')
 @coupon_router.get('/cplist', response_class=HTMLResponse)
 def cplist(req: Request):
     cplist = CouponService.select_cplist()
-    return templates.TemplateResponse('slct_cp.html', {'request': req, 'cplist': cplist})
+    row = CouponService.select_cplist().fetchone()
+    return templates.TemplateResponse('slct_cp.html', {'request': req, 'cplist': cplist, 'row': row})
 
 
 # 차량 조회 페이지
