@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
-class Board(Base):
+class Car(Base):
     __tablename__ = 'car'
 
     pno = Column(Integer, primary_key=True, autoincrement=True)
