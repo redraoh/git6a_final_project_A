@@ -10,7 +10,7 @@ class Car(Base):
     __tablename__ = 'car'
 
     pno = Column(Integer, primary_key=True, autoincrement=True)
-    cno = Column(Integer, nullable=False)
+    cno = Column(String(20), nullable=False)
     pname = Column(String(30), nullable=False)
     ent = Column(String(30), nullable=False)
     ent_time = Column(DateTime, default=datetime.now)
