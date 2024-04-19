@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from app.dbfactory import Session
 from app.models.coupon import Coupon
-from app.models.car import Board
+from app.models.car import Car
 
 
 class CouponService():

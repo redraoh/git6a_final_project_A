@@ -9,7 +9,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.dbfactory import db_startup
 
 from app.routes.coupon import coupon_router
-from app.routes.login import login_router
+from app.routes.member import member_router
 
 # @asynccontextmanager
 # async def lifespan(app: FastAPI):
@@ -23,11 +23,12 @@ app.add_middleware(SessionMiddleware, secret_key='050924duedate')
 
 # jinja2 설정
 templates = Jinja2Templates(directory='views/templates')
-# app.mount('/static', StaticFiles(directory='views/static'), name='static')
+# TailwindCSS
+app.mount("/static", StaticFiles(directory='views/static'), name='static')
 
 # 외부 route 파일 불러오기
 app.include_router(coupon_router)
-app.include_router(login_router)
+app.include_router(member_router)
 
 
 

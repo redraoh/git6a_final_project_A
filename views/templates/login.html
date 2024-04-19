@@ -1,104 +1,100 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>로그인 페이지</title>
-</head>
-<style>
-    h1, h2, h3, h4, h5, h6 { font-family: 'Libre Franklin', sans-serif; --font-sans: 'Libre Franklin'; }
-    body { font-family: 'Cormorant Garamond', serif; --font-serif: 'Cormorant Garamond'; }
+{% extends 'base.html' %}
+{% block style %}
+    <style>h1, h2, h3, h4, h5, h6 { font-family: 'Libre Franklin', sans-serif; --font-sans: 'Libre Franklin'; }
+    </style>
+    <style>body { font-family: 'Cormorant Garamond', serif; --font-serif: 'Cormorant Garamond'; }
+    </style>
+{% endblock %}
 
-</style>
-
-<body>
-<!--
-// v0 by Vercel.
-// https://v0.dev/t/csDVJCiFt1o
--->
-<div class="grid min-h-screen w-full lg:grid-cols-2">
-    <div class="flex items-center justify-center py-12">
-        <div class="mx-auto w-[350px] space-y-6">
-            <div class="space-y-2 text-center">
-                <h1 class="text-3xl font-bold">Login</h1>
-                <p class="text-gray-500 dark:text-gray-400">Enter your email and password to access your account.</p>
-            </div>
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <label
-                            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            for="email"
-                    >
-                        Email
-                    </label>
-                    <input
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            type="email"
-                            id="email"
-                            placeholder="m@example.com"
-                            required=""
-                    />
+{% block main %}
+<main>
+    <div class="grid min-h-screen w-full lg:grid-cols-2">
+        <div class="flex items-center justify-center py-12">
+            <div class="mx-auto w-[350px] space-y-6">
+                <div class="space-y-2 text-center">
+                    <h1 class="text-3xl font-bold">Login</h1>
+                    <p class="text-gray-500 dark:text-gray-400">Enter your email and password to access your account.</p>
                 </div>
-                <div class="space-y-2">
-                    <label
-                            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            for="password"
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                for="email"
+                        >
+                            Email
+                        </label>
+                        <input
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                type="email"
+                                id="email"
+                                placeholder="m@example.com"
+                                required=""
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                for="password"
+                        >
+                            Password
+                        </label>
+                        <input
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                type="password"
+                                id="password"
+                                required=""
+                        />
+                    </div>
+                    <button
+                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+                            type="submit"
                     >
-                        Password
-                    </label>
-                    <input
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            type="password"
-                            id="password"
-                            required=""
-                    />
+                        Login
+                    </button>
                 </div>
-                <button
-                        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
-                        type="submit"
-                >
-                    Login
-                </button>
             </div>
         </div>
-    </div>
-    <div class="hidden lg:block">
-        <div aria-roledescription="carousel" class="relative h-full" role="region">
-            <div class="overflow-hidden">
-                <div class="flex -ml-4">
-                    <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
-                        <img
-                                src="/placeholder.svg"
-                                alt="Drone Image 1"
-                                width="1920"
-                                height="1080"
-                                class="h-full w-full object-cover"
-                                style="aspect-ratio:1920/1080;object-fit:cover"
-                        />
-                    </div>
-                    <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
-                        <img
-                                src="/placeholder.svg"
-                                alt="Drone Image 2"
-                                width="1920"
-                                height="1080"
-                                class="h-full w-full object-cover"
-                                style="aspect-ratio:1920/1080;object-fit:cover"
-                        />
-                    </div>
-                    <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
-                        <img
-                                src="/placeholder.svg"
-                                alt="Drone Image 3"
-                                width="1920"
-                                height="1080"
-                                class="h-full w-full object-cover"
-                                style="aspect-ratio:1920/1080;object-fit:cover"
-                        />
+        <div class="hidden lg:block">
+            <div aria-roledescription="carousel" class="relative h-full" role="region">
+                <div class="overflow-hidden">
+                    <div class="flex -ml-4">
+                        <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
+                            <img
+                                    src="/placeholder.svg"
+                                    alt="Drone Image 1"
+                                    width="1920"
+                                    height="1080"
+                                    class="h-full w-full object-cover"
+                                    style="aspect-ratio:1920/1080;object-fit:cover"
+                            />
+                        </div>
+                        <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
+                            <img
+                                    src="/placeholder.svg"
+                                    alt="Drone Image 2"
+                                    width="1920"
+                                    height="1080"
+                                    class="h-full w-full object-cover"
+                                    style="aspect-ratio:1920/1080;object-fit:cover"
+                            />
+                        </div>
+                        <div aria-roledescription="slide" class="min-w-0 shrink-0 grow-0 basis-full pl-4" role="group">
+                            <img
+                                    src="/placeholder.svg"
+                                    alt="Drone Image 3"
+                                    width="1920"
+                                    height="1080"
+                                    class="h-full w-full object-cover"
+                                    style="aspect-ratio:1920/1080;object-fit:cover"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</body>
-</html>
+</main>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
