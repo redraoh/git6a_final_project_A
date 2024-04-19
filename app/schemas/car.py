@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class Car(BaseModel):
     pno: int
-    cno: int
+    cno: str
     pname: str
     ent: str
     ent_time: datetime
