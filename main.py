@@ -9,7 +9,6 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.dbfactory import db_startup
 from app.routes.car import car_router
 from app.routes.coupon import coupon_router
-from app.routes.login import login_router
 from app.routes.member import member_router
 
 # @asynccontextmanager
