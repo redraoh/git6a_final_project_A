@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from app.dbfactory import Session
 from app.models.coupon import Coupon
-from app.models.car import Board
+from app.models.car import Car
 
 
 class CouponService():
@@ -19,8 +19,8 @@ class CouponService():
     @staticmethod
     def select_carlist():
         with Session() as sess:
-            stmt = select(Board.cno, Board.ent_time, Board.ent, Board.disc) \
-                .order_by(Board.pno) \
+            stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
+                .order_by(Car.pno) \
                 .offset(0).limit(20)
             result = sess.execute(stmt)
         return result
