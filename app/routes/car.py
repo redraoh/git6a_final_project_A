@@ -27,4 +27,4 @@ def get_car_info_by_number(cno: str):
         car_info.cno = str(car_info.cno)
         return car_info
     else:
-        return JSONResponse(content={"error": "Car not found"}, status_code=404)
+        return JSONResponse(content={"error": "차량번호를 찾을 수 없습니다"}, status_code=404)
