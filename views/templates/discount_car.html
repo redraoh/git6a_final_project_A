@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="KO">
 <head>
     <meta charset="UTF-8">
-    <title>차량 정보 조회</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Info</title>
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -139,15 +140,15 @@
             </tr>
             <tr>
                 <th>입차시간</th>
-                <td>입차시간 정보</td>
+                <td id="entTime">입차시간 정보</td>
             </tr>
             <tr>
                 <th>주차시간</th>
-                <td>주차시간 정보</td>
+                <td id="parkTime">주차시간 정보</td>
             </tr>
             <tr>
                 <th>입구명</th>
-                <td>입구명 정보</td>
+                <td id="entName">입구명 정보</td>
             </tr>
         </table>
         <div class="discount-container">
@@ -157,7 +158,6 @@
             <button class="discount-button" onclick="applyDiscount('완전 무료')">완전 무료</button>
             <button class="selected-discount" id="selectedDiscountBtn">선택된 할인권: </button>
         </div>
-
     </div>
     <div class="input-container">
         <h2 class="input-title">차량번호 입력</h2>
@@ -181,6 +181,8 @@
     </div>
 </div>
 
+<!-- 중복된 차량을 선택하는 iframe -->
+<iframe id="car-selection-frame" style="display: none;"></iframe>
 
 <script>
     var carNo = '';
@@ -204,18 +206,80 @@
 
     function submitCarNo() {
         if (carNo.length === 4) {
-            var carNoElement = document.getElementById("carNo");
-            carNoElement.innerText = carNo;
+            fetch(`/cars/${carNo}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // 서버로부터 받은 데이터를 콘솔에 출력
+                    const carInfo = {
+                        cno: data.cno,
+                        ent_time: data.ent_time,
+                        ptime: data.ptime,
+                        ent: data.ent
+                    };
+                    displayCarInfo(carInfo);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         } else {
             alert("4자리의 차량번호를 입력하세요.");
         }
     }
+
+
+
 
     function applyDiscount(discount) {
         var selectedDiscountBtn = document.getElementById("selectedDiscountBtn");
         selectedDiscountBtn.innerText = "선택된 할인권: " + discount;
         selectedDiscountBtn.style.display = "block";
     }
+
+    function showCarSelectionFrame(cars) {
+        const frame = document.getElementById('car-selection-frame');
+        const html = `
+        <h2>중복된 차량 번호가 있습니다.</h2>
+        <ul>
+            ${cars.map(car => `<li><a href="#" onclick="selectCar('${car.pno}')">${car.cno} ${car.pname}</a></li>`).join('')}
+        </ul>
+    `;
+        frame.srcdoc = html;
+        frame.style.display = 'block';
+
+        // 데이터를 iframe으로 전송
+        frame.contentWindow.postMessage(cars, '*');
+    }
+
+    function selectCar(carId) {
+        fetch(`/selected_car/${carId}`)
+            .then(response => response.json())
+            .then(data => {
+                displayCarInfo(data.carInfo);  // 선택한 차량 정보 표시
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function displayCarInfo(carInfo) {
+        if (carInfo) {
+            // 차량 정보 표시를 위해 각 요소의 ID를 가져옵니다.
+            const carNoElement = document.getElementById('carNo');
+            const entTimeElement = document.getElementById('entTime');
+            const parkTimeElement = document.getElementById('parkTime');
+            const entNameElement = document.getElementById('entName');
+
+            // 각 요소에 해당하는 데이터를 넣어줍니다.
+            carNoElement.textContent = carInfo.cno || '정보 없음'; // cno 속성이 없는 경우 기본값으로 '정보 없음'을 표시합니다.
+            entTimeElement.textContent = carInfo.ent_time || '정보 없음';
+            parkTimeElement.textContent = carInfo.ptime || '정보 없음';
+            entNameElement.textContent = carInfo.ent || '정보 없음';
+        } else {
+            console.error('Car info is empty or undefined.');
+        }
+    }
+
+
 </script>
 </body>
 </html>
