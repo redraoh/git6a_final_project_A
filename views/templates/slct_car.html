@@ -1,57 +1,198 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>시간대별 입차 차량</title>
-</head>
-<body>
-    <h1>시간대 검색</h1>
-    <label for="cno">차량번호</label>
-    <label for="usdate">입차일자</label>
-    <input type="date" id="usdate" name="usdate" />
+<!--
+// v0 by Vercel.
+// https://v0.dev/t/hrnp6SzKODl
+-->
+<style>
+    .hid {
+        display:none!important;
+    }
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<div class="flex flex-col h-screen bg-[#f4f7f9]">
+    <div class="flex flex-col items-center justify-center py-4 bg-[#2e3e4e]">
+        <h1 class="text-xl font-bold text-white">NICE주차장</h1>
+    </div>
+    <div class="flex flex-grow overflow-auto">
+        <aside class="w-16 bg-[#344a5f]"></aside>
+        <div class="flex-grow p-6">
+            <div class="mb-6">
+                <div class="flex items-center justify-between px-4 py-2 bg-white border border-gray-200 rounded">
+                    <div class="flex space-x-2">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
 
-    <button>조 회</button>
+                                <div class="flex space-x-2">
+                                    <label for="cno"
+                                           class="border-white min-w-24 h-10 rounded-md border border-input bg-background px-1 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >차량번호</label>
+                                    <input id="cnoInput" type="text" name="search"
+                                           class="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full"
+                                    />
+                                    <label for="date"
+                                           class="border-white min-w-24 h-10 rounded-md border border-input bg-background px-1 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >입차일자</label>
+                                    <input
+                                           class="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full"
+                                           id="dateInput"
+                                           placeholder="Enter date"
+                                           type="date"
+                                    />
+                                    <button
+                                            id="schbtn"
+                                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input hover:text-accent-foreground h-10 px-4 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                                        검색
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col mb-6">
+                <div class="relative w-full overflow-auto">
+                    <table class="w-full caption-bottom text-sm">
+                        <thead class="[&amp;_tr]:border-b">
+                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <th class="h-12 px-4 text-center align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0  w-[33%]">
+                                차량번호
+                            </th>
+                            <th class="h-12 px-4 text-center align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[33%]">
+                                입차시간
+                            </th>
+                            <th class="h-12 px-4 text-center align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[33%]">
+                                입구명
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="[&amp;_tr:last-child]:border-0">
+                        {% if row %}
+                        {% for car in carlist %}
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                <td class="p-4 align-middle text-center [&amp;:has([role=checkbox])]:pr-0">{{ car.cno }}</td>
+                                <td class="p-4 align-middle text-center [&amp;:has([role=checkbox])]:pr-0">{{ car.ent_time }}</td>
+                                <td class="p-4 align-middle text-center [&amp;:has([role=checkbox])]:pr-0">{{ car.ent }}</td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                            <tr class="text-center border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                <td colspan="3" class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">입차 내역이 없습니다.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <table>
-        <tr>
-            <th>차량번호</th>
-            <th>입차시간</th>
-            <th>입구명</th>
-        </tr>
-        <tr>
-            <td>dummy</td>
-            <td>dummy</td>
-            <td>dummy</td>
-        </tr>
-    </table>
+{#        기능 안 하는 부분 숨기기 #}
+            <div class="grid grid-cols-2 gap-6 hid">
+                <div class="flex flex-col mb-6">
+                    <div class="relative w-full overflow-auto">
+                        <table class="w-full caption-bottom text-sm">
+                            <thead class="[&amp;_tr]:border-b">
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[25%]">
+                                    차량번호
+                                </th>
+                                <td class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[75%]">
+                                    {#12가 3456#}
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody class="[&amp;_tr:last-child]:border-0">
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[25%]">변경번호</th>
+                                <td class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[75%]">
+                                    <div class="flex items-center float-right space-x-2">
+                                        <input
+                                                class="flex h-10 max-w-72 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full"
+                                                placeholder="변경번호 입력"
+                                                type="text"
+                                        />
+                                        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input hover:text-accent-foreground h-10 px-4 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                                            변경
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="flex flex-col mb-6">
+                    <div class="relative w-full overflow-auto">
+                        <table class="w-full caption-bottom text-sm">
+                            <thead class="[&amp;_tr]:border-b">
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-full">
+                                    할인종류
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="[&amp;_tr:last-child]:border-0">
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-{#    pagination#}
-    <ul></ul>
+            <ul class="pagination justify-content-center m-4">
+                {# 현제페이지가 1이라면 이전버튼 비활성 #}
+                {% if cpg == 1 %}
+                    <li class="page-item disabled">
+                        {% else %}
+                    <li class="page-item">
+                {% endif %}
+                <a href="{{ baseurl }}{{ cpg - 1 }}" class="page-link">이전</a>
+                </li>
 
-    <table>
-        <tr>
-            <th>차량번호</th>
-            <th></th>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td><label for="chgno">변경번호</label></td>
-            <td><input type="text" id="chgno"><button>변경</button></td>
-        </tr>
-    </table>
+                {% for idx in range(stpg, stpg + 10) %}
+                    {% if idx <= allpage %} {# idx가 allpage보다 같거나 작으면 페이지네이션 출력 #}
+                        {% if cpg == idx %}
+                            <li class="page-item active">
+                                {% else %}
+                            <li class="page-item">
+                        {% endif %}
+                    <a href="{{ baseurl }}{{ idx }}" class="page-link">{{ idx }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
 
-    <table>
-        <tr>
-            <th>할인종류</th>
-        </tr>
-    </table>
+                {# 현제페이지가 마지막 페이지라면 이전버튼 비활성 #}
+                {% if cpg == allpage %}
+                    <li class="page-item disabled">
+                        {% else %}
+                    <li class="page-item">
+                {% endif %}
+                <a href="{{ baseurl }}{{ cpg + 1 }}" class="page-link">다음</a>
+                </li>
+            </ul>
 
-    <button>EXCEL</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        document.getElementById('usdate').value = new Date().toISOString().substring(0, 10);
-        document.getElementById('usdate').max = new Date().toISOString().substring(0, 10);
-    </script>
+<script>
+    nowmth = new Date().toISOString().slice(0, 7);
+    nowdt = new Date().toISOString().substring(0, 10);
+    document.querySelector('#dateInput').value = nowdt;
+    document.querySelector('#dateInput').max = nowdt;
 
-</body>
-</html>
+    let schbtn = document.querySelector("#schbtn");
+
+    // 검색 기능
+    schbtn.addEventListener('click', () => {
+        let nokey = document.querySelector('#cnoInput').value;
+        let tmkey = document.querySelector('#dateInput').value;
+
+        if (nokey && tmkey) {
+            let params = `/carlist/${nokey}/${tmkey}`;
+            let findurl = 'http://127.0.0.1:8000' + params;
+
+            location.href = findurl;
+        } else {
+            alert('차량 번호를 입력해주세요.');
+        }
+    });
+</script>

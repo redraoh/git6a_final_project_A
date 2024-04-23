@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, and_, func
 
 from app.dbfactory import Session
 from app.models.coupon import Coupon
@@ -7,6 +7,15 @@ from app.models.car import Car
 
 class CouponService():
     @staticmethod
+    def car_convert(cto):
+        data = cto.model_dump()
+        car = Car(**data)
+        data = {'pno': car.pno, 'cno': car.cno, 'pname': car.pname,
+                'ent': car.ent, 'ent_time': car.ent_time, 'check': car.check,
+                'exit_time': car.exit_time, 'ptime': car.ptime, 'disc': car.disc}
+        return data
+
+    @staticmethod
     def coupon_convert(cpto):
         data = cpto.model_dump()
         cp = Coupon(**data)
@@ -14,33 +23,52 @@ class CouponService():
                 'disc_time': cp.disc_time}
         return data
 
+    # coupon list 조회
     @staticmethod
-    def select_cplist():
+    def select_cplist(cpg):
+        stnum = (cpg - 1) * 25
+
         with Session() as sess:
+            cnt = sess.query(func.count(Coupon.dno)).scalar()
+
             stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time) \
                 .order_by(Coupon.dno) \
-                .offset(0).limit(20)
+                .offset(stnum).limit(10)
             result = sess.execute(stmt)
-        return result
+        return result, cnt
 
-
+    # car ent list 조회
     @staticmethod
     def select_carlist():
         with Session() as sess:
             stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
                 .order_by(Car.pno) \
-                .offset(0).limit(20)
+                .offset(0).limit(10)
             result = sess.execute(stmt)
         return result
 
-
+    # search coupon list 조회 - month, date
     @staticmethod
     def find_select_list(skey):
         with Session() as sess:
             stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time)
 
             stmt = stmt.filter(Coupon.disc_time.like(skey)) \
-                .order_by(Coupon.dno).offset(0).limit(20)
+                .order_by(Coupon.dno).offset(0).limit(10)
+            result = sess.execute(stmt)
+
+        return result
+
+    # search car ent list 조회 - cno && ent_time
+    @staticmethod
+    def find_carlist(nokey, tmkey):
+        with Session() as sess:
+            stmt = select(Car.cno, Car.ent, Car.ent_time)
+
+            myfilter = and_(Car.cno.like(nokey), Car.ent_time.like(tmkey))
+
+            stmt = stmt.filter(myfilter) \
+                .order_by(Car.pno).offset(0).limit(10)
             result = sess.execute(stmt)
 
         return result
