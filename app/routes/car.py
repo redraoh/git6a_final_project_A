@@ -14,8 +14,7 @@ car_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
 
 # 차량 데이터 조회
-
-@car_router.get('/cars', response_class=HTMLResponse)
+@car_router.get('/discount', response_class=HTMLResponse)
 def cars(request: Request):
     return templates.TemplateResponse('discount_car.html', {'request': request, 'cars': cars})
 
