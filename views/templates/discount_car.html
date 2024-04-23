@@ -207,9 +207,16 @@
     function submitCarNo() {
         if (carNo.length === 4) {
             fetch(`/cars/${carNo}`)
-                .then(response => response.json()) // 서버 응답을 JSON으로 파싱
+                .then(response => response.json())
                 .then(data => {
-                    displayCarInfo(data.carInfo); // 파싱된 데이터를 가지고 차량 정보 표시
+                    console.log(data); // 서버로부터 받은 데이터를 콘솔에 출력
+                    const carInfo = {
+                        cno: data.cno,
+                        ent_time: data.ent_time,
+                        ptime: data.ptime,
+                        ent: data.ent
+                    };
+                    displayCarInfo(carInfo);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -218,6 +225,7 @@
             alert("4자리의 차량번호를 입력하세요.");
         }
     }
+
 
 
 
@@ -254,18 +262,24 @@
     }
 
     function displayCarInfo(carInfo) {
-        // 차량 정보 표시를 위해 각 요소의 ID를 가져옵니다.
-        const carNoElement = document.getElementById('carNo');
-        const entTimeElement = document.getElementById('entTime');
-        const parkTimeElement = document.getElementById('parkTime');
-        const entNameElement = document.getElementById('entName');
+        if (carInfo) {
+            // 차량 정보 표시를 위해 각 요소의 ID를 가져옵니다.
+            const carNoElement = document.getElementById('carNo');
+            const entTimeElement = document.getElementById('entTime');
+            const parkTimeElement = document.getElementById('parkTime');
+            const entNameElement = document.getElementById('entName');
 
-        // 각 요소에 해당하는 데이터를 넣어줍니다.
-        carNoElement.Textcontent = carInfo.cno;
-        entTimeElement.Textcontent = carInfo.ent_time;
-        parkTimeElement.Textcontent = carInfo.ptime;
-        entNameElement.Textcontent = carInfo.ent;
+            // 각 요소에 해당하는 데이터를 넣어줍니다.
+            carNoElement.textContent = carInfo.cno || '정보 없음'; // cno 속성이 없는 경우 기본값으로 '정보 없음'을 표시합니다.
+            entTimeElement.textContent = carInfo.ent_time || '정보 없음';
+            parkTimeElement.textContent = carInfo.ptime || '정보 없음';
+            entNameElement.textContent = carInfo.ent || '정보 없음';
+        } else {
+            console.error('Car info is empty or undefined.');
+        }
     }
+
+
 </script>
 </body>
 </html>
