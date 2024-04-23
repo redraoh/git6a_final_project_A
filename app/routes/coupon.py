@@ -38,3 +38,9 @@ def carlist(req: Request):
 # def carlist(req: Request):
 #     carlist = CouponService.select_carlist()
 #     return templates.TemplateResponse('slct_car.html', {'request': req, 'carlist': carlist})
+
+
+# 쿠폰 사용 집계 페이지
+@coupon_router.get('/log', response_class=HTMLResponse)
+def carlist(req: Request):
+    return templates.TemplateResponse('coupon_summary.html', {'request': req})
