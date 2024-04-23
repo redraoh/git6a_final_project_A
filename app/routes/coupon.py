@@ -23,19 +23,22 @@ async def redirect_to_cplist():
 def cplist(req: Request, cpg: int):
     stpg = int((cpg - 1) / 10) * 10 + 1
     cplist, cnt = CouponService.select_cplist(cpg)
-    allpage = ceil(cnt / 10)  # 총 페이지 수
+    allpage = ceil(cnt / 10)
     return templates.TemplateResponse('coupon_log.html',
                                       {'request': req, 'cplist': cplist, 'cnt': cnt, 'cpg': cpg,
                                        'stpg': stpg, 'allpage': allpage, 'basesurl': '/cplist/'})
 
 
 # 쿠폰 날짜 검색 조회
-@coupon_router.get('/cplist/{skey}', response_class=HTMLResponse)
-def find(req: Request, skey: str):
-    cplist = CouponService.find_select_list('%' + skey + '%')
-    row = CouponService.find_select_list('%' + skey + '%').fetchone()
+@coupon_router.get('/cplist/{skey}/{cpg}', response_class=HTMLResponse)
+def find(req: Request, skey: str, cpg: int):
+    stpg = int((cpg - 1) / 10) * 10 + 1
+    cplist, cnt = CouponService.find_select_list('%' + skey + '%', cpg)
+    allpage = ceil(cnt / 10)
     return templates.TemplateResponse('coupon_log.html',
-                                      {'request': req, 'cplist': cplist, 'skey': skey, 'row': row})
+                                      {'request': req, 'cplist': cplist, 'skey': skey,
+                                       'cnt': cnt, 'cpg': cpg, 'stpg': stpg, 'allpage': allpage,
+                                       'basesurl': f'/border/list/{skey}/'})
 
 
 # 차량 조회 페이지

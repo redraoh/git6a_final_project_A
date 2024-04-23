@@ -7,6 +7,14 @@ from app.models.car import Car
 
 class CouponService():
     @staticmethod
+    def coupon_convert(cpto):
+        data = cpto.model_dump()
+        cp = Coupon(**data)
+        data = {'dno': cp.dno, 'cno': cp.cno, 'disc': cp.disc,
+                'disc_time': cp.disc_time}
+        return data
+
+    @staticmethod
     def car_convert(cto):
         data = cto.model_dump()
         car = Car(**data)
@@ -15,18 +23,10 @@ class CouponService():
                 'exit_time': car.exit_time, 'ptime': car.ptime, 'disc': car.disc}
         return data
 
-    @staticmethod
-    def coupon_convert(cpto):
-        data = cpto.model_dump()
-        cp = Coupon(**data)
-        data = {'dno': cp.dno, 'cno': cp.cno, 'disc': cp.disc,
-                'disc_time': cp.disc_time}
-        return data
-
     # coupon list 조회
     @staticmethod
     def select_cplist(cpg):
-        stnum = (cpg - 1) * 25
+        stnum = (cpg - 1) * 10
 
         with Session() as sess:
             cnt = sess.query(func.count(Coupon.dno)).scalar()
@@ -49,15 +49,20 @@ class CouponService():
 
     # search coupon list 조회 - month, date
     @staticmethod
-    def find_select_list(skey):
+    def find_select_list(skey, cpg):
+        stnum = (cpg - 1) * 10
         with Session() as sess:
             stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time)
+            myfilter = Coupon.disc_time.like(skey)
 
-            stmt = stmt.filter(Coupon.disc_time.like(skey)) \
-                .order_by(Coupon.dno).offset(0).limit(10)
+            stmt = stmt.filter(myfilter) \
+                .order_by(Coupon.dno).offset(stnum).limit(10)
             result = sess.execute(stmt)
 
-        return result
+            cnt = sess.query(func.count(Coupon.dno)) \
+                .filter(myfilter).scalar()
+
+        return result, cnt
 
     # search car ent list 조회 - cno && ent_time
     @staticmethod
