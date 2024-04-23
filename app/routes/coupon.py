@@ -11,17 +11,18 @@ templates = Jinja2Templates(directory='views/templates')
 
 
 # 쿠폰 조회 페이지
-@coupon_router.get('/cplist', response_class=HTMLResponse)
+@coupon_router.get('/coupon', response_class=HTMLResponse)
 def cplist(req: Request):
     cplist = CouponService.select_cplist()
     row = CouponService.select_cplist().fetchone()
-    return templates.TemplateResponse('slct_cp.html', {'request': req, 'cplist': cplist, 'row': row})
+    return templates.TemplateResponse('coupon_log.html', {'request': req, 'cplist': cplist, 'row': row})
 
 
 # 차량 조회 페이지
-@coupon_router.get('/carlist', response_class=HTMLResponse)
+@coupon_router.get('/search', response_class=HTMLResponse)
 def carlist(req: Request):
-    return templates.TemplateResponse('slct_car.html', {'request': req})
+    return templates.TemplateResponse('select_cars.html', {'request': req})
+
 
 # 차량 조회 페이지 - router
 # @coupon_router.get('/carlist', response_class=HTMLResponse)
