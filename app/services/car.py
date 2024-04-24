@@ -9,24 +9,26 @@ class CarService():
 
         try:
             with Session() as sess:
-                car_info = sess.query(Car).filter(Car.cno.endswith(last_four_digits)).first()
-                # cno의 뒷 4자리로 끝나는 데이터를 검색
+                car_info = sess.query(Car).filter(Car.cno.endswith(last_four_digits)).all()
+                # cno의 뒷 4자리로 끝나는 데이터를 검색하고 모든 결과를 리스트로 반환
                 return car_info
         except SQLAlchemyError as e:
             # 데이터베이스 작업 중 에러 발생 시 처리
             print("Error occurred while querying database:", e)
             return None
 
+
     @classmethod
-    def apply_discount(cls, car_info, discount):
+    def apply_discount(cls, car_info_list, discount):
         try:
             with Session() as sess:
-                car_info.disc = discount
-                # 변경된 정보를 데이터베이스에 추가
-                sess.merge(car_info)  # merge 사용하여 변경된 엔티티를 데이터베이스에 반영
+                for car_info in car_info_list:
+                    car_info.disc = discount
+                    # 변경된 정보를 데이터베이스에 추가
+                    sess.merge(car_info)  # merge 사용하여 변경된 엔티티를 데이터베이스에 반영
                 sess.commit()  # 세션을 커밋하여 변경 사항을 실제로 데이터베이스에 반영
 
-                return car_info
+                return car_info_list
         except SQLAlchemyError as e:
             # 데이터베이스 작업 중 에러 발생 시 처리
             print("Error occurred while updating database:", e)
