@@ -38,7 +38,7 @@ def find(req: Request, skey: str, cpg: int):
     return templates.TemplateResponse('coupon_log.html',
                                       {'request': req, 'cplist': cplist, 'skey': skey,
                                        'cnt': cnt, 'cpg': cpg, 'stpg': stpg, 'allpage': allpage,
-                                       'basesurl': f'/border/list/{skey}/'})
+                                       'basesurl': f'/cplist/{skey}/'})
 
 
 # 차량 조회 페이지
