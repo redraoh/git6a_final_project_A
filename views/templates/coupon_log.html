@@ -332,7 +332,7 @@
                             <thead class="[&amp;_tr]:border-b">
                             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                 <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[25%]">
-                                    사용월
+                                    <span class="tablemth">사용월</span><span class="tabledt hid">사용일</span>
                                 </th>
                                 <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 max-w-[25%]">
                                     할인종류
@@ -491,6 +491,10 @@
         document.getElementById('dateInput').value = nowdt;
         document.getElementById('dateInput').max = nowdt;
 
+        let tablemt = document.querySelector('.tablemth');
+        let tabledt = document.querySelector('.tabledt');
+
+
         // 라디오 버튼 클릭 이벤트 리스너 추가
         mthrdo.addEventListener('change', () => {
             document.querySelector('.mon').classList.remove('hid');
@@ -541,11 +545,15 @@
                     document.getElementById('monthInput').value = pval;
                     document.querySelector('.mon').classList.remove('hid');
                     document.querySelector('.dt').classList.add('hid');
+                    tablemt.classList.remove('hid');
+                    tabledt.classList.add('hid');
                 } else if (pval.length === 10) {
                     dtrdo.checked = true;
                     document.getElementById('dateInput').value = pval;
                     document.querySelector('.mon').classList.add('hid');
                     document.querySelector('.dt').classList.remove('hid');
+                    tablemt.classList.add('hid');
+                    tabledt.classList.remove('hid');
                 }
             }
         }
