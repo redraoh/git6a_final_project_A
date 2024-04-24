@@ -70,7 +70,7 @@ def find(req: Request, nokey: str, tmkey: str, cpg: int):
 
 
 # 사용 집계 조회
-@coupon_router.get('/cplog', response_class=HTMLResponse)
+@coupon_router.get('/cpsum', response_class=HTMLResponse)
 def carlist(req: Request):
     return templates.TemplateResponse('coupon_summary.html',
                                       {'request': req})
