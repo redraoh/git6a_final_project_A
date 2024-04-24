@@ -39,13 +39,17 @@ class CouponService():
 
     # car ent list 조회
     @staticmethod
-    def select_carlist():
+    def select_carlist(cpg):
+        stnum = (cpg - 1) * 10
+
         with Session() as sess:
+            cnt = sess.query(func.count(Car.pno)).scalar()
+
             stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
                 .order_by(Car.pno) \
-                .offset(0).limit(10)
+                .offset(stnum).limit(10)
             result = sess.execute(stmt)
-        return result
+        return result, cnt
 
     # search coupon list 조회 - month, date
     @staticmethod
@@ -66,14 +70,17 @@ class CouponService():
 
     # search car ent list 조회 - cno && ent_time
     @staticmethod
-    def find_carlist(nokey, tmkey):
+    def find_carlist(nokey, tmkey, cpg):
+        stnum = (cpg - 1) * 10
         with Session() as sess:
             stmt = select(Car.cno, Car.ent, Car.ent_time)
-
             myfilter = and_(Car.cno.like(nokey), Car.ent_time.like(tmkey))
 
             stmt = stmt.filter(myfilter) \
-                .order_by(Car.pno).offset(0).limit(10)
+                .order_by(Car.pno).offset(stnum).limit(10)
             result = sess.execute(stmt)
 
-        return result
+            cnt = sess.query(func.count(Car.pno)) \
+                .filter(myfilter).scalar()
+
+        return result, cnt
