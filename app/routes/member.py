@@ -25,7 +25,7 @@ def login(req: Request, userid: str = Form(), passwd: str = Form()):
     result = MemberService.check_login(userid, passwd)
     if result:
         # 세션처리 - 회원아이디를 세션에 등록
-        req.session['m'] = result.userid
+        req.session['m'] = result.mid
         # 리디렉션되는 위치 지정하기
         return RedirectResponse(url='/discount', status_code=status.HTTP_303_SEE_OTHER)
     else:
