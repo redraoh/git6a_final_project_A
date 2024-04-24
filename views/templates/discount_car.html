@@ -151,14 +151,18 @@
                 <td id="entName">입구명 정보</td>
             </tr>
         </table>
-        <div class="discount-container">
+        <div class="discount-container" style="position: relative;">
             <h2>사용 가능 할인권</h2>
             <button class="discount-button" onclick="applyDiscount('1시간 무료')">1시간 무료</button>
             <button class="discount-button" onclick="applyDiscount('2시간 무료')">2시간 무료</button>
             <button class="discount-button" onclick="applyDiscount('완전 무료')">완전 무료</button>
             <button class="selected-discount" id="selectedDiscountBtn">선택된 할인권: </button>
+            <button class="button ok" onclick="submitDiscount()" style="position: absolute; top: 115px; right: 0;">적용</button>
+
         </div>
+
     </div>
+
     <div class="input-container">
         <h2 class="input-title">차량번호 입력</h2>
         <div class="number-display" id="cnoDisplay">
@@ -185,6 +189,9 @@
 <iframe id="car-selection-frame" style="display: none;"></iframe>
 
 <script>
+
+    // 버튼을 누르면 입력이 되도록 하는 기능
+    // 버튼을 누르면 입력이 되도록 하는 기능
     var carNo = '';
 
     function addDigit(digit) {
@@ -193,7 +200,6 @@
             updateCarNoDisplay();
         }
     }
-
     function clearDigit() {
         carNo = carNo.slice(0, -1);
         updateCarNoDisplay();
@@ -204,22 +210,42 @@
         carNoDisplay.innerText = carNo.padEnd(4, '-');
     }
 
+    // 할인권을 선택하여 적용하는 함수
+    function applyDiscount(discount) {
+        var selectedDiscountBtn = document.getElementById("selectedDiscountBtn");
+        selectedDiscountBtn.innerText = "선택된 할인권: " + discount;
+        selectedDiscountBtn.style.display = "block";
+    }
+
+    // 차량 정보를 가져오는 함수
     function submitCarNo() {
         if (carNo.length === 4) {
-            fetch(`/cars/${carNo}`)
-                .then(response => response.json())
+            fetch(`/discount/${carNo}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('차량을 찾을 수 없습니다.'); // 오류 발생 시 catch 블록으로 이동
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     console.log(data); // 서버로부터 받은 데이터를 콘솔에 출력
-                    const carInfo = {
-                        cno: data.cno,
-                        ent_time: data.ent_time,
-                        ptime: data.ptime,
-                        ent: data.ent
-                    };
-                    displayCarInfo(carInfo);
+                    if (data.duplicate) {
+                        // 중복된 차량번호가 있을 경우 선택할 수 있는 목록 표시
+                        showCarSelectionFrame(data.cars);
+                    } else {
+                        // 중복된 차량번호가 없을 경우 차량 정보 표시
+                        const carInfo = {
+                            cno: data.cno,
+                            ent_time: data.ent_time,
+                            ptime: data.ptime,
+                            ent: data.ent
+                        };
+                        displayCarInfo(carInfo);
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    alert(error.message); // 오류 메시지 알림 표시
                 });
         } else {
             alert("4자리의 차량번호를 입력하세요.");
@@ -228,38 +254,73 @@
 
 
 
-
-    function applyDiscount(discount) {
+    // 적용 버튼을 눌렀을 때 할인 정보를 서버에 제출하는 함수
+    function submitDiscount() {
         var selectedDiscountBtn = document.getElementById("selectedDiscountBtn");
-        selectedDiscountBtn.innerText = "선택된 할인권: " + discount;
-        selectedDiscountBtn.style.display = "block";
+        var discount = selectedDiscountBtn.innerText.split(": ")[1]; // 선택된 할인권 텍스트에서 할인 정보 추출
+
+        if (carNo !== '----') {
+            // 서버에 할인 정보를 전송하여 차량의 할인권 정보 업데이트
+            updateDiscountInfo(discount);
+        } else {
+            alert('차량번호를 입력해주세요.');
+        }
     }
 
+    // 서버에 할인 정보를 전송하여 차량의 할인권 정보 업데이트하는 함수
+    function updateDiscountInfo(discount) {
+        // 차량번호 가져오기
+        var carNo = document.getElementById('carNo').textContent;
+
+        // 요청 주소 설정
+        var requestUrl = `/discount/${carNo}/discount?disc=${encodeURIComponent(discount)}`;
+
+        // 할인 정보를 차량 정보에 반영
+        fetch(requestUrl, {  // 수정된 요청 주소 사용
+            method: 'PUT',  // 메서드를 PUT으로 변경
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // 서버에서 받은 응답 메시지를 알림창으로 표시
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    // 중복된 차량 목록을 표시하는 함수
     function showCarSelectionFrame(cars) {
         const frame = document.getElementById('car-selection-frame');
         const html = `
         <h2>중복된 차량 번호가 있습니다.</h2>
         <ul>
-            ${cars.map(car => `<li><a href="#" onclick="selectCar('${car.pno}')">${car.cno} ${car.pname}</a></li>`).join('')}
+            ${cars.map(car => `<li><a href="#" onclick="selectCar('${car.cno}')">${car.cno} ${car.ent}</a></li>`).join('')}
         </ul>
     `;
         frame.srcdoc = html;
         frame.style.display = 'block';
-
-        // 데이터를 iframe으로 전송
-        frame.contentWindow.postMessage(cars, '*');
     }
 
-    function selectCar(carId) {
-        fetch(`/selected_car/${carId}`)
-            .then(response => response.json())
+    // 사용자가 차량을 선택할 때 실행되는 함수
+    function selectCar(carNo) {
+        fetch(`/discount/${carNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('차량을 찾을 수 없습니다.');
+                }
+                return response.json();
+            })
             .then(data => {
-                displayCarInfo(data.carInfo);  // 선택한 차량 정보 표시
+                displayCarInfo(data); // 선택한 차량 정보 표시
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert(error.message);
             });
     }
+
 
     function displayCarInfo(carInfo) {
         if (carInfo) {
