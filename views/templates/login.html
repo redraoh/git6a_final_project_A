@@ -13,7 +13,7 @@
 {% block main %}
 <main>
     <div class="grid min-h-screen w-full lg:grid-cols-2">
-        <div class="flex items-center justify-center py-12">
+        <form class="flex items-center justify-center py-12" action="/login" method="post">
             <div class="mx-auto w-[350px] space-y-6">
                 <div class="space-y-2 text-center">
                     <h1 class="text-3xl font-bold">웹할인시스템</h1>
@@ -23,14 +23,15 @@
                     <div class="space-y-2">
                         <label
                                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                for="email"
+                                for="userid"
                         >
                             ID
                         </label>
                         <input
                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                type="email"
-                                id="email"
+                                type="userid"
+                                id="userid"
+                                name="userid"
                                 placeholder="m@example.com"
                                 required=""
                         />
@@ -38,14 +39,15 @@
                     <div class="space-y-2">
                         <label
                                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                for="password"
+                                for="passwd"
                         >
                             Password
                         </label>
                         <input
                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                 type="password"
-                                id="password"
+                                id="passwd"
+                                name="passwd"
                                 required=""
                         />
                     </div>
@@ -57,7 +59,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
         <div class="hidden lg:block">
             <div class="relative h-full">
                 <img
@@ -73,4 +75,27 @@
 {% endblock %}
 
 {% block script %}
+{#    <script>#}
+{#        document.querySelector('form').addEventListener('submit', (event) => {#}
+{#            event.preventDefault(); // 기본 제출 방지#}
+{#            event.target.method = 'post'; // 메소드 설정#}
+{#            event.target.submit(); // 폼 제출#}
+{#        });#}
+{#    </script>#}
+
+    <script>
+        // submit 버튼 인식
+        let submitButton = document.querySelector('button[type="submit"]');
+
+        // form 찾기
+        let formElement = document.querySelector('form');
+
+        // 클릭버튼
+        submitButton.addEventListener('click', (event) => {
+            event.preventDefault(); // 기본제출 방지
+            formElement.method = 'post'; // 메소드 설정
+            formElement.submit(); // 폼제출
+        });
+    </script>
+
 {% endblock %}

@@ -18,6 +18,7 @@ templates = Jinja2Templates(directory='views/templates')
 def cars(request: Request):
     return templates.TemplateResponse('discount_car.html', {'request': request, 'cars': cars})
 
+
 @car_router.get("/discount/{cno}", response_model=List[Car])
 def get_car_info_by_number(cno: str):
     car_info_list = CarService.get_car_info_by_number(cno)
