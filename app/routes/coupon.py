@@ -26,7 +26,7 @@ async def redirect_to_cplist():
 
 @coupon_router.get("/cpsum", include_in_schema=False)
 async def redirect_to_cplist():
-    return RedirectResponse(f'/cpsum/{datetime.now().strftime("%Y-%m")}/1')
+    return RedirectResponse(f'/cpsum/{datetime.now().strftime("%Y-%m")}')
 
 
 # 사용 내역 조회
@@ -75,24 +75,12 @@ def findcar(req: Request, nokey: str, tmkey: str, cpg: int):
                                        'stpg': stpg, 'allpage': allpage, 'basesurl': f'/carlist/{nokey}/{tmkey}'})
 
 
-# 사용 집계 조회
-@coupon_router.get('/cpsum/{cpg}', response_class=HTMLResponse)
-def sumlist(req: Request, cpg: int):
-    stpg = int((cpg - 1) / 10) * 10 + 1
-    cslist, cnt = CouponService.select_cplist_summary(cpg)
-    allpage = ceil(cnt / 10)
-    return templates.TemplateResponse('coupon_summary.html',
-                                      {'request': req, 'cslist': cslist, 'cnt': cnt, 'cpg': cpg,
-                                       'stpg': stpg, 'allpage': allpage, 'basesurl': '/cpsum/'})
-
-
 # 사용 집계 검색 조회
-@coupon_router.get('/cpsum/{skey}/{cpg}', response_class=HTMLResponse)
-def findsum(req: Request, skey: str, cpg: int):
-    stpg = int((cpg - 1) / 10) * 10 + 1
-    cslist, cnt = CouponService.find_cplist_summary('%' + skey + '%', cpg)
-    allpage = ceil(cnt / 10)
+@coupon_router.get('/cpsum/{skey}', response_class=HTMLResponse)
+def findsum(req: Request, skey: str):
+    schlist, wlist, srchcnt, wlcnt, cnt = CouponService.find_cplist_summary('%' + skey + '%')
     return templates.TemplateResponse('coupon_summary.html',
-                                      {'request': req, 'cslist': cslist, 'skey': skey,
-                                       'cnt': cnt, 'cpg': cpg, 'stpg': stpg, 'allpage': allpage,
+                                      {'request': req, 'skey': skey,
+                                       'schlist': schlist, 'wlist': wlist, 'srchcnt': srchcnt, 'wlcnt': wlcnt,
+                                       'cnt': cnt,
                                        'basesurl': f'/cpsum/{skey}/'})

@@ -337,11 +337,11 @@
                                 <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 max-w-[25%]">
                                     할인종류
                                 </th>
-                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 hidden md:table-cell">
+                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 max-w-[25%]">
                                     결제구분
                                 </th>
-                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 hidden md:table-cell">
-                                    사용요금
+                                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 max-w-[25%]">
+                                    사용매수
                                 </th>
                             </tr>
                             </thead>
@@ -349,28 +349,48 @@
                             <!-- 표 본문 -->
                             <tbody class="[&amp;_tr:last-child]:border-0">
                             {% if cnt %}
-                                {% for cs in cslist %}
+
+                                {% if srchcnt %}
+                                    {% for sr in schlist %}
+                                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                            {% if loop.first %}
+                                            <td id="dsctm" class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ srchcnt }}">
+                                                2024-04
+                                            </td>
+                                            {% endif %}
+                                            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                                {{ sr.disc }}
+                                            </td>
+                                            <td  class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                                유료
+                                            </td>
+                                            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                                {{ sr.count }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 text-center" colspan="4">
+                                            쿠폰 사용 정보가 없습니다.
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% for wr in wlist %}
                                     <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                         {% if loop.first %}
-                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ cnt }}">
-                                            {{ cs.disc_time }}
+                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ wlcnt }}">
+                                            전체
                                         </td>
                                         {% endif %}
-{#       잠시보류                       #}
-{#                                        {% if loop.first %}#}
-{#                                            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ cnt }}">#}
-{#                                                {{ cs.disc_time }}#}
-{#                                            </td>#}
-{#                                        {% endif %}#}
-{#                                    #}
                                         <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                            {{ cs.disc }}
+                                            {{ wr.disc }}
                                         </td>
                                         <td  class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
                                             유료
                                         </td>
                                         <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                            {{ cs.count }}
+                                            {{ wr.count }}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -386,89 +406,6 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- nav start -->
-                {% if cnt %}
-                    <nav aria-label="pagination" class="mx-auto flex w-full justify-center" role="navigation">
-                        <ul class="flex flex-row items-center gap-1">
-                            <li class="disabled">
-                                {% if cpg == 1 %}
-                                    <a
-                                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5"
-                                            aria-label="Go to previous page"
-                                    >
-                                {% else %}
-                                    <a
-                                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5"
-                                            aria-label="Go to previous page"
-                                            href="{{ baseurl }}{{ cpg - 1 }}"
-                                    >
-                                {% endif %}
-                                <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="h-4 w-4"
-                                >
-                                    <path d="m15 18-6-6 6-6"></path>
-                                </svg>
-                                <span>Previous</span>
-                                </a></li>
-
-                            {% for idx in range(stpg, stpg + 10) %}
-                                {% if idx <= allpage %} {# idx가 allpage보다 같거나 작으면 페이지네이션 출력 #}
-                                    {% if cpg == idx %}
-                                        <li class="page-item active">
-                                            {% else %}
-                                        <li class="page-item">
-                                    {% endif %}
-                                <a class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
-                                   href="{{ baseurl }}{{ idx }}">{{ idx }}</a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-
-                            <li class="">
-                                {% if cpg == allpage %}
-                                    <a
-                                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5"
-                                            aria-label="Go to next page"
-                                    >
-                                {% else %}
-                                    <a
-                                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5"
-                                            aria-label="Go to next page"
-                                            href="{{ baseurl }}{{ cpg + 1 }}"
-                                    >
-                                {% endif %}
-                                <span>Next</span>
-                                <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="h-4 w-4"
-                                >
-                                    <path d="m9 18 6-6-6-6"></path>
-                                </svg>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                {% else %}
-                {% endif %}
-                <!-- nav end -->
 
                 <!-- 여력이 된다면 -->
                 <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-24 hid">
@@ -527,7 +464,7 @@
                 }
 
                 if (cpkey) {
-                    let cpparams = `/cpsum/${cpkey}/1`;
+                    let cpparams = `/cpsum/${cpkey}`;
                     location.href = 'http://127.0.0.1:8000' + cpparams;
                 } else {
                     alert('검색어를 입력해주세요.');
@@ -550,6 +487,7 @@
                     document.querySelector('.dt').classList.add('hid');
                     tablemt.classList.remove('hid');
                     tabledt.classList.add('hid');
+                    document.getElementById('dsctm').innerHTML = pval;
                 } else if (pval.length === 10) {
                     dtrdo.checked = true;
                     document.getElementById('dateInput').value = pval;
@@ -557,6 +495,7 @@
                     document.querySelector('.dt').classList.remove('hid');
                     tablemt.classList.add('hid');
                     tabledt.classList.remove('hid');
+                    document.getElementById('dsctm').innerHTML = pval;
                 }
             }
         }

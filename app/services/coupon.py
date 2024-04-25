@@ -85,33 +85,28 @@ class CouponService():
 
         return result, cnt
 
-    # coupon summary 조회
+    # coupon summary 검색 조회
     @staticmethod
-    def select_cplist_summary(cpg):
-        stnum = (cpg - 1) * 10
+    def find_cplist_summary(skey):
 
         with Session() as sess:
-            # cnt = sess.query(func.count(Coupon.dno)).scalar()
+            # 검색필터
+            myfilter = Coupon.disc_time.like(skey)
+
+            # 기본 group by statement
             stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time
                           , func.count(Coupon.dno).label('count')) \
                 .order_by(Coupon.dno).group_by(Coupon.disc)
-            cnt = len(list(sess.execute(stmt)))
-            stmt = stmt.offset(stnum).limit(10)
-            result = sess.execute(stmt)
-        return result, cnt
 
-    # coupon summary 검색 조회
-    @staticmethod
-    def find_cplist_summary(skey, cpg):
-        stnum = (cpg - 1) * 10
+            # srch table rowcount
+            srchcnt = len(list(sess.execute(stmt.filter(myfilter))))
 
-        with Session() as sess:
-            myfilter = Coupon.disc_time.like(skey)
-            stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time
-                          , func.count(Coupon.dno).label('count')) \
-                .order_by(Coupon.dno).group_by(Coupon.disc).filter(myfilter)
-            cnt = len(list(sess.execute(stmt)))
+            # table rowcount
+            wlcnt = len(list(sess.execute(stmt)))
+            cnt = srchcnt + wlcnt
+            print(f'총카운트 {srchcnt}+{wlcnt}={cnt}')
 
-            stmt = stmt.offset(stnum).limit(10)
-            result = sess.execute(stmt)
-        return result, cnt
+            schlist = sess.execute(stmt.filter(myfilter))
+            wlist = sess.execute(stmt)
+
+        return schlist, wlist, srchcnt, wlcnt, cnt
