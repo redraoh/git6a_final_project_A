@@ -349,19 +349,28 @@
                             <!-- 표 본문 -->
                             <tbody class="[&amp;_tr:last-child]:border-0">
                             {% if cnt %}
-                                {% for cp in cplist %}
+                                {% for cs in cslist %}
                                     <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                            {{ cp.disc_time }}
+                                        {% if loop.first %}
+                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ cnt }}">
+                                            {{ cs.disc_time }}
                                         </td>
+                                        {% endif %}
+{#       잠시보류                       #}
+{#                                        {% if loop.first %}#}
+{#                                            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" rowspan="{{ cnt }}">#}
+{#                                                {{ cs.disc_time }}#}
+{#                                            </td>#}
+{#                                        {% endif %}#}
+{#                                    #}
                                         <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                            {{ cp.disc }}
+                                            {{ cs.disc }}
                                         </td>
-                                        <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+                                        <td  class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
                                             유료
                                         </td>
                                         <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                            1
+                                            {{ cs.count }}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -377,12 +386,6 @@
                         </table>
                     </div>
                 </div>
-
-                {#
-                cpg: {{ cpg }}
-                stpg : {{ stpg }}
-                allpage : {{ allpage }}
-#}
 
                 <!-- nav start -->
                 {% if cnt %}
@@ -524,7 +527,7 @@
                 }
 
                 if (cpkey) {
-                    let cpparams = `/cplist/${cpkey}/1`;
+                    let cpparams = `/cpsum/${cpkey}/1`;
                     location.href = 'http://127.0.0.1:8000' + cpparams;
                 } else {
                     alert('검색어를 입력해주세요.');
@@ -537,7 +540,7 @@
         console.log(crurl);
 
         function updateContent() {
-            if (crurl[1] === 'cplist' && crurl[2]) {
+            if (crurl[1] === 'cpsum' && crurl[2]) {
                 let pval = decodeURI(crurl[2]);
 
                 if (pval.length === 7) {

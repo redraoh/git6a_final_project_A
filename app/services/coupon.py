@@ -37,20 +37,6 @@ class CouponService():
             result = sess.execute(stmt)
         return result, cnt
 
-    # car ent list 조회
-    @staticmethod
-    def select_carlist(cpg):
-        stnum = (cpg - 1) * 10
-
-        with Session() as sess:
-            cnt = sess.query(func.count(Car.pno)).scalar()
-
-            stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
-                .order_by(Car.pno) \
-                .offset(stnum).limit(10)
-            result = sess.execute(stmt)
-        return result, cnt
-
     # search coupon list 조회 - month, date
     @staticmethod
     def find_select_list(skey, cpg):
@@ -68,6 +54,20 @@ class CouponService():
 
         return result, cnt
 
+    # car ent list 조회
+    @staticmethod
+    def select_carlist(cpg):
+        stnum = (cpg - 1) * 10
+
+        with Session() as sess:
+            cnt = sess.query(func.count(Car.pno)).scalar()
+
+            stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
+                .order_by(Car.pno) \
+                .offset(stnum).limit(10)
+            result = sess.execute(stmt)
+        return result, cnt
+
     # search car ent list 조회 - cno && ent_time
     @staticmethod
     def find_carlist(nokey, tmkey, cpg):
@@ -83,4 +83,35 @@ class CouponService():
             cnt = sess.query(func.count(Car.pno)) \
                 .filter(myfilter).scalar()
 
+        return result, cnt
+
+    # coupon summary 조회
+    @staticmethod
+    def select_cplist_summary(cpg):
+        stnum = (cpg - 1) * 10
+
+        with Session() as sess:
+            # cnt = sess.query(func.count(Coupon.dno)).scalar()
+            stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time
+                          , func.count(Coupon.dno).label('count')) \
+                .order_by(Coupon.dno).group_by(Coupon.disc)
+            cnt = len(list(sess.execute(stmt)))
+            stmt = stmt.offset(stnum).limit(10)
+            result = sess.execute(stmt)
+        return result, cnt
+
+    # coupon summary 검색 조회
+    @staticmethod
+    def find_cplist_summary(skey, cpg):
+        stnum = (cpg - 1) * 10
+
+        with Session() as sess:
+            myfilter = Coupon.disc_time.like(skey)
+            stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time
+                          , func.count(Coupon.dno).label('count')) \
+                .order_by(Coupon.dno).group_by(Coupon.disc).filter(myfilter)
+            cnt = len(list(sess.execute(stmt)))
+
+            stmt = stmt.offset(stnum).limit(10)
+            result = sess.execute(stmt)
         return result, cnt
