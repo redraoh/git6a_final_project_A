@@ -37,20 +37,6 @@ class CouponService():
             result = sess.execute(stmt)
         return result, cnt
 
-    # car ent list 조회
-    @staticmethod
-    def select_carlist(cpg):
-        stnum = (cpg - 1) * 10
-
-        with Session() as sess:
-            cnt = sess.query(func.count(Car.pno)).scalar()
-
-            stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
-                .order_by(Car.pno) \
-                .offset(stnum).limit(10)
-            result = sess.execute(stmt)
-        return result, cnt
-
     # search coupon list 조회 - month, date
     @staticmethod
     def find_select_list(skey, cpg):
@@ -66,6 +52,20 @@ class CouponService():
             cnt = sess.query(func.count(Coupon.dno)) \
                 .filter(myfilter).scalar()
 
+        return result, cnt
+
+    # car ent list 조회
+    @staticmethod
+    def select_carlist(cpg):
+        stnum = (cpg - 1) * 10
+
+        with Session() as sess:
+            cnt = sess.query(func.count(Car.pno)).scalar()
+
+            stmt = select(Car.cno, Car.ent_time, Car.ent, Car.disc) \
+                .order_by(Car.pno) \
+                .offset(stnum).limit(10)
+            result = sess.execute(stmt)
         return result, cnt
 
     # search car ent list 조회 - cno && ent_time
@@ -84,3 +84,29 @@ class CouponService():
                 .filter(myfilter).scalar()
 
         return result, cnt
+
+    # coupon summary 검색 조회
+    @staticmethod
+    def find_cplist_summary(skey):
+
+        with Session() as sess:
+            # 검색필터
+            myfilter = Coupon.disc_time.like(skey)
+
+            # 기본 group by statement
+            stmt = select(Coupon.dno, Coupon.cno, Coupon.disc, Coupon.disc_time
+                          , func.count(Coupon.dno).label('count')) \
+                .order_by(Coupon.dno).group_by(Coupon.disc)
+
+            # srch table rowcount
+            srchcnt = len(list(sess.execute(stmt.filter(myfilter))))
+
+            # table rowcount
+            wlcnt = len(list(sess.execute(stmt)))
+            cnt = srchcnt + wlcnt
+            print(f'총카운트 {srchcnt}+{wlcnt}={cnt}')
+
+            schlist = sess.execute(stmt.filter(myfilter))
+            wlist = sess.execute(stmt)
+
+        return schlist, wlist, srchcnt, wlcnt, cnt
